@@ -22,3 +22,6 @@ print(e)
 #last char
 f = word[-1]
 print(f)
+
+del word[0]
+print(word)
