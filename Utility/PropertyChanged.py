@@ -1,10 +1,12 @@
 #Use this tool to Add private field and OnPropertyChanged function to C# property.
+#Author: Li Jiangong
+#Version: 0.1
 
 import re
+import shutil
 
 class AutoGeneratorPropertyChangedTool:
 	def __init__(self, filePath, baseClassName):
-		#self.file = null
 		self.filePath = filePath
 		self.baseClassName = baseClassName
 
@@ -30,25 +32,31 @@ class AutoGeneratorPropertyChangedTool:
 		else:
 			return True
 
-	def addField(property):
+	def addField(self, property):
 		return property
 
-	def addPropertyChanged(property):
+	def addPropertyChanged(selt, property):
 		return property 
 
 print("Please input your inherited from class name: ")
-baseClassName = input()
-#baseClassName = "INotifyPropertyChanged"
+#baseClassName = input()
+baseClassName = "INotifyPropertyChanged"
 
 print("Please input your c# class file path: ")
-filePath = input()
-#filePath = "D:/testProperty.txt"
+#filePath = input()
+filePath = "D:/testProperty.txt"
 
 tool = AutoGeneratorPropertyChangedTool(filePath, baseClassName)
 
-file = open(filePath, "r")
+#create backup file
+fileBackupPath = filePath + "_bakcup"
+shutil.copy2(filePath, fileBackupPath)
+print("Create backup file successfully")
 
-for line in file:
+fileBackup = open(fileBackupPath, "r+")
+file = open(filePath, "w+")
+
+for line in fileBackup:
 	print("Line is: %s"%line)
 
 	result = tool.isClass(line)
@@ -56,3 +64,11 @@ for line in file:
 
 	result = tool.isProperty(line)
 	print("Is property type: %s\n"%result)
+
+	if result:
+		file.write(tool.addPropertyChanged(line))
+	else:
+		file.write(line)
+
+file.close()
+fileBackup.close()
