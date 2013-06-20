@@ -10,10 +10,12 @@ class AutoGeneratorPropertyChangedTool:
 		self.filePath = filePath
 		self.baseClassName = baseClassName
 
+		self.methodName = "OnPropertyChanged"
+
 		self.classPattern = "(\s*public\s+%(class)s\s+%(derived)s\s+%(colon)s+\s*%(base)s)"%{'class':"class", 'derived':"\w+", 'colon':":", 'base':self.baseClassName}
 		print(self.classPattern)
 
-		self.propertyPattern = "(\s*public\s+%(type)s\s+%(property)s\s+%(getset)s)"%{'type':"\w+", 'property':"\w+", 'getset':"\{\s*get;\s*set;\s*\}"}
+		self.propertyPattern = "(\s*public\s+(?P<property_type>%(type)s)\s+(?P<property_name>%(property)s)\s+%(getset)s)"%{'type':"\w+", 'property':"\w+", 'getset':"\{\s*get;\s*set;\s*\}"}
 		print(self.propertyPattern)
 
 	def isClass(self, data):
@@ -32,11 +34,31 @@ class AutoGeneratorPropertyChangedTool:
 		else:
 			return True
 
-	def addField(self, property):
-		return property
+	def addField(self, propertyVariable):
+		return "private %(type)s _%(name)s;"%('type':propertyVariable['property_type'], 'name':propertyVariable['property_name'])
 
-	def addPropertyChanged(selt, property):
-		return property 
+	def addMethod(self, propertyVariable):
+		return propertyVariable['property_name']
+
+	def addPropertyChanged(self, property):
+		result = "";
+		result += self.addField(self.getPropertyName(property))
+		result += self.addMethod(self.getPropertyName(property))
+		return result 
+
+	def getPropertyVariable(self, property):
+		if property == "":
+			raise Exception("Property is empty")
+
+		m = re.match(self.propertyPattern, property)
+		if m is None:
+			raise Exception("Property is invalid, value is: %s"%property)
+
+		print(m.group('property_type'))
+		print(m.group('property_name'))
+
+		variable = {'property_type':m.group('property_type'), 'property_name':m.group('property_name')}
+		retun variable
 
 print("Please input your inherited from class name: ")
 #baseClassName = input()
@@ -72,3 +94,5 @@ for line in fileBackup:
 
 file.close()
 fileBackup.close()
+
+print("addPropertyChanged finished")
