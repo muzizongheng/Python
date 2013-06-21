@@ -1,6 +1,7 @@
 #Use this tool to Add private field and OnPropertyChanged function to C# property.
 #Author: Li Jiangong
-#Version: 0.1
+#Email: jgli_2008@sina.com
+#Version: 0.2
 
 import re
 import shutil
@@ -15,7 +16,8 @@ class AutoGeneratorPropertyChangedTool:
 		self.classPattern = "(\s*public\s+%(class)s\s+%(derived)s\s+%(colon)s+\s*%(base)s)"%{'class':"class", 'derived':"\w+", 'colon':":", 'base':self.baseClassName}
 		print(self.classPattern)
 
-		self.propertyPattern = "(\s*public\s+(?P<property_type>%(type)s)\s+(?P<property_name>%(property)s)\s+%(getset)s)"%{'type':"\w+", 'property':"\w+", 'getset':"\{\s*get;\s*set;\s*\}"}
+		self.propertyPattern = "((?P<space>\s*)public\s+(?P<property_type>%(type)s)\s+(?P<property_name>%(property)s)\s+%(getset)s)"\
+			%{'type':"\w+", 'property':"\w+", 'getset':"\{((\s*get;\s*set;\s*)|(\s*set;\s*get;\s*))\}"}
 		print(self.propertyPattern)
 
 	def isClass(self, data):
@@ -35,15 +37,27 @@ class AutoGeneratorPropertyChangedTool:
 			return True
 
 	def addField(self, propertyVariable):
-		return "private %(type)s _%(name)s;"%('type':propertyVariable['property_type'], 'name':propertyVariable['property_name'])
+		return "%(space)sprivate %(type)s %(field)s;\n"%{'space':propertyVariable['space'], 'type':propertyVariable['property_type'], 'field':self.getFieldName(propertyVariable['property_name'])}
 
 	def addMethod(self, propertyVariable):
-		return propertyVariable['property_name']
+		result = "%(space)spublic %(type)s %(name)s\n"%{'space':propertyVariable['space'], 'type':propertyVariable['property_type'], 'name':propertyVariable['property_name']}
+		result += "%(space)s{\n"%{'space':propertyVariable['space']}
+		result += "%(space)s\tget{return %(field)s;}\n"%{'space':propertyVariable['space'], 'field':self.getFieldName(propertyVariable['property_name'])}
+		result += "%(space)s\tset\n%(space)s\t{\n%(space)s\t\t%(field)s = value;\n%(space)s\t\tOnPropertyChanged(\"%(name)s\");\n%(space)s\t}\n"\
+			%{'space':propertyVariable['space'], 'field':self.getFieldName(propertyVariable['property_name']), 'name':propertyVariable['property_name']}
+		result += "%(space)s}\n"%{'space':propertyVariable['space']}
+
+		return result
 
 	def addPropertyChanged(self, property):
 		result = "";
-		result += self.addField(self.getPropertyName(property))
-		result += self.addMethod(self.getPropertyName(property))
+
+		varialbe = self.getPropertyVariable(property)
+		result += self.addField(varialbe)
+		result += self.addMethod(varialbe)
+
+		print(result)
+		
 		return result 
 
 	def getPropertyVariable(self, property):
@@ -54,11 +68,17 @@ class AutoGeneratorPropertyChangedTool:
 		if m is None:
 			raise Exception("Property is invalid, value is: %s"%property)
 
-		print(m.group('property_type'))
-		print(m.group('property_name'))
+		result = m.groupdict()
 
-		variable = {'property_type':m.group('property_type'), 'property_name':m.group('property_name')}
-		retun variable
+		return result
+
+	def getFieldName(self, propertyName):
+		result = propertyName
+		firstChar = "_" + result[0].lower()
+		result = result.replace(result[0], firstChar, 1)
+
+		return result
+
 
 print("Please input your inherited from class name: ")
 #baseClassName = input()
