@@ -2,21 +2,22 @@
 #Author: Li Jiangong
 #Email: jgli_2008@sina.com
 #Version: 0.2
+#coding=utf-8
 
 import re
 import shutil
 
 class AutoGeneratorPropertyChangedTool:
-	def __init__(self, filePath, baseClassName):
+	def __init__(self, filePath, baseClassName, propertyChangedName):
 		self.filePath = filePath
 		self.baseClassName = baseClassName
 
-		self.methodName = "OnPropertyChanged"
+		self.methodName = propertyChangedName
 
 		self.classPattern = "(\s*public\s+%(class)s\s+%(derived)s\s+%(colon)s+\s*%(base)s)"%{'class':"class", 'derived':"\w+", 'colon':":", 'base':self.baseClassName}
 		print(self.classPattern)
 
-		self.propertyPattern = "((?P<space>\s*)public\s+(?P<property_type>%(type)s)\s+(?P<property_name>%(property)s)\s+%(getset)s)"\
+		self.propertyPattern = "((?P<space>\s*)public\s+(?P<property_type>%(type)s)\s+(?P<property_name>%(property)s)\s*%(getset)s)"\
 			%{'type':"\w+", 'property':"\w+", 'getset':"\{((\s*get;\s*set;\s*)|(\s*set;\s*get;\s*))\}"}
 		print(self.propertyPattern)
 
@@ -48,7 +49,7 @@ class AutoGeneratorPropertyChangedTool:
 		result += "%(space)s}\n"%{'space':propertyVariable['space']}
 
 		result += "\n"
-		
+
 		return result
 
 	def addPropertyChanged(self, property):
@@ -82,17 +83,24 @@ class AutoGeneratorPropertyChangedTool:
 		return result
 
 
-print("Please input your inherited from class name: ")
-baseClassName = input()
-if baseClassName == "":
-	baseClassName = "INotifyPropertyChanged"
+# Currently no need to input base class name
+# print("Please input your inherited from class name: ")
+# baseClassName = input()
+# if baseClassName == "":
+# 	baseClassName = "INotifyPropertyChanged"
+
+print("Please input your adding method name: ")
+methodName = input()
+if methodName == "":
+	methodName = "OnPropertyChanged"
+
 
 print("Please input your c# class file path: ")
 filePath = input()
 if filePath == "":
 	filePath = "D:/testProperty.txt"
 
-tool = AutoGeneratorPropertyChangedTool(filePath, baseClassName)
+tool = AutoGeneratorPropertyChangedTool(filePath, "", methodName)
 
 #create backup file
 fileBackupPath = filePath + "_bakcup"
@@ -105,8 +113,9 @@ file = open(filePath, "w+")
 for line in fileBackup:
 	print("Line is: %s"%line)
 
-	result = tool.isClass(line)
-	print("Is class type: %s\n"%result)
+	#Currently not need to judge class name
+	#result = tool.isClass(line)
+	#print("Is class type: %s\n"%result)
 
 	result = tool.isProperty(line)
 	print("Is property type: %s\n"%result)
