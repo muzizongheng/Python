@@ -47,6 +47,8 @@ class AutoGeneratorPropertyChangedTool:
 			%{'space':propertyVariable['space'], 'field':self.getFieldName(propertyVariable['property_name']), 'name':propertyVariable['property_name']}
 		result += "%(space)s}\n"%{'space':propertyVariable['space']}
 
+		result += "\n"
+		
 		return result
 
 	def addPropertyChanged(self, property):
@@ -81,12 +83,14 @@ class AutoGeneratorPropertyChangedTool:
 
 
 print("Please input your inherited from class name: ")
-#baseClassName = input()
-baseClassName = "INotifyPropertyChanged"
+baseClassName = input()
+if baseClassName == "":
+	baseClassName = "INotifyPropertyChanged"
 
 print("Please input your c# class file path: ")
-#filePath = input()
-filePath = "D:/testProperty.txt"
+filePath = input()
+if filePath == "":
+	filePath = "D:/testProperty.txt"
 
 tool = AutoGeneratorPropertyChangedTool(filePath, baseClassName)
 
