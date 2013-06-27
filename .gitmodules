@@ -1,0 +1,10 @@
+[submodule "Utility/Evernote"]
+	path = Utility/Evernote
+	url = git://github.com/evernote/evernote-sdk-python3/
+[submodule "Utility/EvernotePython2"]
+	path = Utility/EvernotePython2
+	url = https://github.com/evernote/evernote-sdk-python
+[submodule "Utility/EvernotePython_Dev"]
+	path = Utility/EvernotePython_Dev
+	url = https://github.com/evernote/evernote-sdk-python3
+	branch = dev
