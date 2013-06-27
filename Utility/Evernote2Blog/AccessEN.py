@@ -39,6 +39,9 @@ def addTitle2Content(html, title):
 
 #add evernote's tags to html
 def addTags2Content(html, tags):
+    if tags is None:
+        return html;
+
     data = "<![CDATA["
     for t in tags:
         data += t
@@ -156,26 +159,27 @@ for notebook in notebooks:
 
         #get resource & write to local    
         try:
-            for res in n.resources:
-                print("guid is: " + res.guid)
-                print("width is: ", res.width)
-                print("height is: ", res.height)
+            if n.resources is not None:
+                for res in n.resources:
+                    print("guid is: " + res.guid)
+                    print("width is: ", res.width)
+                    print("height is: ", res.height)
 
-                attachment = noteStore.getResource(authToken, res.guid, True, False, True, False)
+                    attachment = noteStore.getResource(authToken, res.guid, True, False, True, False)
 
-                fileType = getMediaType(res.mime)
-                attachmentFile = open(res.guid+"."+fileType, "wb")
-                attachmentFile.write(attachment.data.body)
-                attachmentFile.close()
+                    fileType = getMediaType(res.mime)
+                    attachmentFile = open(res.guid+"."+fileType, "wb")
+                    attachmentFile.write(attachment.data.body)
+                    attachmentFile.close()
 
-                #calculate hashcode for media
-                md5 = hashlib.md5()
-                md5.update(attachment.data.body)
-                hashcode = md5.hexdigest()
-                print("hast code: ", hashcode)
+                    #calculate hashcode for media
+                    md5 = hashlib.md5()
+                    md5.update(attachment.data.body)
+                    hashcode = md5.hexdigest()
+                    print("hast code: ", hashcode)
 
-                #replace en-media to img
-                content = replaceEnMediaWithImg(content, res.guid, fileType, hashcode)
+                    #replace en-media to img
+                    content = replaceEnMediaWithImg(content, res.guid, fileType, hashcode)
         except Exception as e:
             print(e)
         finally:
