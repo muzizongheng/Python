@@ -30,8 +30,22 @@ import evernote.edam.error.ttypes as Errors
 
 #add title tag to html
 def addTitle2Content(html, title):
-    declare = r"<!DOCTYPE en-note SYSTEM "http://xml.evernote.com/pub/enml2.dtd">"
-    return html.replace(declare, declare+"<title>"+title+"</title>")
+    declare = "<!DOCTYPE en-note SYSTEM \"http://xml.evernote.com/pub/enml2.dtd\">"
+    replace = declare+"<title>"+title+"</title>"
+
+    print("replace with: ", replace)
+    print("replace result: ", html.replace(declare, replace))
+    return html.replace(declare, replace)
+
+#add evernote's tags to html
+def addTags2Content(html, tags):
+    data = "<![CDATA["
+    for t in tags:
+        data += t
+        data += ","
+    data += "]]>"
+
+    return html+data;
 
 #convert en-media node to img node of html
 def replaceEnMediaWithImg(html, fileName, fileType, hashCode):
@@ -63,6 +77,7 @@ def replaceEnMediaWithImg(html, fileName, fileType, hashCode):
 
     return html.replace(enmedia, result)
 
+#get media type from mime
 def getMediaType(enMedia):
     if enMedia == "":
         return
@@ -135,11 +150,9 @@ for notebook in notebooks:
         #add title to content
         content = addTitle2Content(content, n.title)
 
-        # try:
-        #     for tag in n.tagNames:
-        #         print("tag name is: ", tag)
-        # except Exception as err:
-        #     print(err)
+        #add tags to content
+        tags = noteStore.getNoteTagNames(authToken, n.guid)
+        content = addTags2Content(content, tags)
 
         #get resource & write to local    
         try:
