@@ -10,13 +10,13 @@
 
 ''' A library that provides python interface to '''
 
-import xmlrpc
-import urllib
+import xmlrpc.client
+import urllib.request, urllib.parse, urllib.error
 
 # Helper function to check if URL exists
 
 def checkURL(url):
-    try: urllib.urlopen(url)
+    try: urllib.request.urlopen(url)
     except IOError: return 0
     return 1
 
@@ -58,7 +58,7 @@ class Blog(object):
             raise BlogError('XML-RPC API URL not found.')
 
         # Connect to the api. Call listMethods to keep a dictionary of available methods
-        self.server             = xmlrpclib.ServerProxy(serverapi)
+        self.server             = xmlrpc.client.ServerProxy(serverapi)
         self.list_methods()
 
     def list_methods(self):
@@ -70,10 +70,12 @@ class Blog(object):
         if not len(self.methods):
             try:
                 self.methods = self.server.system.listMethods()
-            except xmlrpclib.Fault as fault:
+            except xmlrpc.client.Fault as fault:
                 raise BlogError(fault.faultString)
 
-        return self.methods.sort()
+        self.methods.sort()
+
+        return self.methods
 
     def execute(self, methodname, *args):
 
@@ -88,8 +90,8 @@ class Blog(object):
             raise BlogError(BlogError.METHOD_NOT_SUPPORTED)
 
         try:
-            r = getattr(self.server, methodname)(args)
-        except xmlrpclib.Fault as fault:
+            r = getattr(self.server, methodname)(*args)
+        except xmlrpc.client.Fault as fault:
             raise BlogError(fault.faultString)
 
         return r
@@ -118,7 +120,7 @@ class MetaWeblog(Blog):
     def __init__(self, serverapi, username, password, appkey='0x001'):
         Blog.__init__(self, serverapi, username, password, appkey)
         
-    def get_recent_posts(self, numposts=10, blogid=1):
+    def get_recent_posts(self, numposts=10, blogid="1"):
         """
         Returns 'numposts' number of recent post for the blog identified by 'blogid'
         
@@ -137,7 +139,7 @@ class MetaWeblog(Blog):
         """
         return self.execute('metaWeblog.getPost', postid, self.username, self.password)
         
-    def new_post(self, content, publish=True, blogid=1):
+    def new_post(self, content, publish=True, blogid="1"):
         """
         New post
 
@@ -171,7 +173,7 @@ class MetaWeblog(Blog):
         """
         return self.execute('metaWeblog.deletePost', self.appkey, postid, self.username, self.password, publish)
 
-    def get_categories(self, blogid=1):
+    def get_categories(self, blogid="1"):
         """
         Returns a list of categories.
 
@@ -187,7 +189,7 @@ class MetaWeblog(Blog):
         """
         return self.execute('metaWeblog.getUsersBlogs', self.appkey, self.username, self.password)
 
-    def new_media_object(self, new_object, blogid=1):
+    def new_media_object(self, new_object, blogid="1"):
         """
         Args:
             new_object = Structure containing information about new media object to be uploaded
@@ -199,11 +201,11 @@ class MetaWeblog(Blog):
         """
         return self.execute('metaWeblog.newMediaObject', blogid, self.username, self.password, new_object)
         
-    def get_template(self, templateType, blogid=1):
+    def get_template(self, templateType, blogid="1"):
         """Returns the template type identifed by templateType"""
         return self.execute("metaWeblog.getTemplate", self.appkey, blogid, self.username, self.password, templateType)
         
-    def set_template(self, template, templateType, blogid=1):
+    def set_template(self, template, templateType, blogid="1"):
         
         """Sets the new template value for templateType"""
         return self.execute("metaWeblog.setTemplate", self.appkey, blogid, self.username, self.password, template, templateType)        
@@ -217,27 +219,27 @@ class WordPress(MetaWeblog):
     def __init__(self, serverapi, username, password):
         MetaWeblog.__init__(self, serverapi, username, password)
         
-    def get_post_status_list(self, blogid=1):
+    def get_post_status_list(self, blogid="1"):
         """
         ( Draft, Pending Review, Private, Published ).Returns a dict of all the valid post statuses ( draft, pending, private, publish ) and their descriptions 
         ( Draft, Pending Review, Private, Published ).
         """
         return self.execute('wp.getPostStatusList', blogid, self.username, self.password)
 
-    def get_authors(self, blogid=1):
+    def get_authors(self, blogid="1"):
         """
             Get a list of users for the blog.
         """
         return self.execute('wp.getAuthors', blogid, self.username, self.password)
         
-    def new_page(self, content, publish=True, blogid=1):
+    def new_page(self, content, publish=True, blogid="1"):
         """
         Args:
             content - Dictionary of new content
         """
         return self.execute('wp.newPage', blogid, self.username, self.password, content, publish)
         
-    def edit_page(self, pageid, content, publish=True, blogid=1):
+    def edit_page(self, pageid, content, publish=True, blogid="1"):
         """
         Args:
             pageid = Page to edit
@@ -245,37 +247,37 @@ class WordPress(MetaWeblog):
         """
         return self.execute('wp.editPage', blogid, pageid, self.username, self.password, content, publish)
 
-    def delete_page(self, pageid, blogid=1):
+    def delete_page(self, pageid, blogid="1"):
         """
         Args:
             pageid = Page to delete
         """
         return self.execute('wp.deletePage', blogid, self.username, self.password, pageid)
 
-    def get_pages(self, blogid=1):
+    def get_pages(self, blogid="1"):
         """
         Returns a list of the most recent pages in the system.
         """
         return self.execute('wp.getPages', blogid, self.username, self.password)
 
-    def get_page(self, pageid, blogid=1):
+    def get_page(self, pageid, blogid="1"):
         """
         Returns the content of page identified by pageid
         """
         return self.execute('wp.getPage', blogid, pageid, self.username, self.password)
         
-    def get_page_list(self, blogid=1):
+    def get_page_list(self, blogid="1"):
         """
         Get an list of all the pages on a blog. Just the minimum details, lighter than wp.getPages.
         """
         return self.execute('wp.getPageList', blogid, self.username, self.password)
         
-    def get_page_status_list(self, blogid=1):
+    def get_page_status_list(self, blogid="1"):
         """Returns a dict of all the valid page statuses ( draft, private, publish ) and their descriptions ( Draft, Private, Published)"""
         
         return self.execute('wp.getPageStatusList', blogid, self.username, self.password)        
         
-    def new_category(self, content, blogid=1):
+    def new_category(self, content, blogid="1"):
         """
         Args:
             content = Dictionary content having data for new category.
@@ -284,7 +286,7 @@ class WordPress(MetaWeblog):
         """
         return self.execute('wp.newCategory', blogid, self.username, self.password, content)
 
-    def delete_category(self, catid, blogid=1):
+    def delete_category(self, catid, blogid="1"):
         """
         Args:
             catid = Category ID
@@ -293,7 +295,7 @@ class WordPress(MetaWeblog):
         """
         return self.execute('wp.deleteCategory', blogid, self.username, self.password, catid)
         
-    def get_comment_count(self, postid=0, blogid=1):
+    def get_comment_count(self, postid=0, blogid="1"):
         """
         Provides a struct of all the comment counts ( approved, awaiting_moderation, spam, total_comments ) for a given postid.
         The postid parameter is optional (or can be set to zero), if it is not provided then the same struct is returned, but for the 
@@ -308,7 +310,7 @@ class WordPress(MetaWeblog):
         """
         return self.execute('wp.getUsersBlogs', self.username, self.password)
 
-    def get_options(self, options=[], blogid=1):
+    def get_options(self, options=[], blogid="1"):
         """
         Return option details.
         
@@ -317,7 +319,7 @@ class WordPress(MetaWeblog):
         """
         return self.execute('wp.getOptions', blogid, self.username, self.password, options)
 
-    def set_options(self, option, blogid=1):
+    def set_options(self, option, blogid="1"):
         """
         That option parameter is option name/value pairs. The return value is same as if you called wp.getOptions asking for the those option names, 
         only they'll include the new value. If you try to set a new value for an option that is read-only, it will silently fail and you'll get the original
@@ -325,11 +327,11 @@ class WordPress(MetaWeblog):
         """
         return self.execute('wp.setOptions', blogid, self.username, self.password, option)
         
-    def suggest_categories(self, category, max_results=10, blogid=1):
+    def suggest_categories(self, category, max_results=10, blogid="1"):
         """Returns a list of dictionaries of categories that start with a given string."""
         return self.execute('wp.suggestCategories', blogid, self.username, self.password, category, max_results)
         
-    def upload_file(self, data, blogid=1):
+    def upload_file(self, data, blogid="1"):
         """
         Upload a file.
         
