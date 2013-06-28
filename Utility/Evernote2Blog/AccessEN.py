@@ -15,6 +15,7 @@ import binascii
 import time
 import re
 import hashlib
+from datetime import datetime
 
 if "..\\Evernote\\lib" not in sys.path:
 	sys.path.append("..\\Evernote\\lib")
@@ -27,6 +28,10 @@ import evernote.edam.userstore.constants as UserStoreConstants
 import evernote.edam.notestore.NoteStore as NoteStore
 import evernote.edam.type.ttypes as Types
 import evernote.edam.error.ttypes as Errors
+
+
+import AccessBlog 
+
 
 #add title tag to html
 def addTitle2Content(html, title):
@@ -90,6 +95,15 @@ def getMediaType(enMedia):
 
     return enMedia[index:]
 
+#init blog (include: blog api, username, password)
+def initBlog():        
+    server = "http://upload.move.blog.sina.com.cn/blog_rebuild/blog/xmlrpc.php"#"http://muzizongheng.cnblogs.com/services/metablogapi.aspx"
+    username = ""
+    password = ""
+
+    metaweblog = AccessBlog.MetaWeblog(server, username, password)
+    return metaweblog
+
 
 # Real applications authenticate with Evernote using OAuth, but for the
 # purpose of exploring the API, you can get a developer token that allows
@@ -133,6 +147,9 @@ noteStoreHttpClient = THttpClient.THttpClient(noteStoreUrl)
 noteStoreProtocol = TBinaryProtocol.TBinaryProtocol(noteStoreHttpClient)
 noteStore = NoteStore.Client(noteStoreProtocol)
 
+#init blog
+metaweblog = initBlog()
+
 # List all of the notebooks in the user's account        
 notebooks = noteStore.listNotebooks(authToken)
 print("Found ", len(notebooks), " notebooks:")
@@ -151,7 +168,7 @@ for notebook in notebooks:
         content = noteStore.getNoteContent(authToken, n.guid)
 
         #add title to content
-        content = addTitle2Content(content, n.title)
+        #content = addTitle2Content(content, n.title)
 
         #add tags to content
         tags = noteStore.getNoteTagNames(authToken, n.guid)
@@ -180,19 +197,27 @@ for notebook in notebooks:
 
                     #replace en-media to img
                     content = replaceEnMediaWithImg(content, res.guid, fileType, hashcode)
+
+                    #publish note to blog
+                    post = AccessBlog.Post(datetime.now(), content, n.title)
+                    metaweblog.new_post(post, False)
+
+                    time.sleep(31)
         except Exception as e:
             print(e)
         finally:
             pass
 
-        #write note
-        try:
-            f = open(n.guid+".html", "w+", encoding='utf-8-sig')
-            f.write(content)
-            f.close()
-        except Exception as err:
-            print(err)
+        # #write note
+        # try:
+        #     f = open(n.guid+".html", "w+", encoding='utf-8-sig')
+        #     f.write(content)
+        #     f.close()
+        # except Exception as err:
+        #     print(err)
 
         print()
 
     print()
+
+print("publish notes to blog successfully")
