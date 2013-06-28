@@ -6,6 +6,11 @@
 
   For license information please check the LICENSE page of the package.
 
+  Changed by Li Jiangong(mailto: jgli_2008@sina.com):
+  1)Convert code from python 2 to 3
+  2)Fixed bug: list's sorted return None; "execute" function pass args error
+  3)Add: Post struct for blog's content
+
 """
 
 ''' A library that provides python interface to '''
