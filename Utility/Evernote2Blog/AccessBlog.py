@@ -9,12 +9,13 @@
   Changed by Li Jiangong(mailto: jgli_2008@sina.com):
   1)Convert code from python 2 to 3
   2)Fixed bug: list's sorted return None; "execute" function pass args error
-  3)Add: Post struct for blog's content
+  3)Add: Post struct for blog's content; FileData struct for blog's resource
 
 """
 
 ''' A library that provides python interface to '''
 
+import base64
 import xmlrpc.client
 import urllib.request, urllib.parse, urllib.error
 
@@ -63,7 +64,7 @@ class Blog(object):
             raise BlogError('XML-RPC API URL not found.')
 
         # Connect to the api. Call listMethods to keep a dictionary of available methods
-        self.server             = xmlrpc.client.ServerProxy(serverapi)
+        self.server             = xmlrpc.client.ServerProxy(serverapi, allow_none=True)
         self.list_methods()
 
     def list_methods(self):
@@ -78,7 +79,7 @@ class Blog(object):
             except xmlrpc.client.Fault as fault:
                 raise BlogError(fault.faultString)
 
-        self.methods.sort()
+        #self.methods.sort()
 
         return self.methods
 
@@ -352,6 +353,41 @@ class MovableType(MetaWeblog):
     def __init__(self, serverapi, username, password):
         raise BlogError("This class has not yet been implemented")
         
+class Post:
+    def __init__(self, dateCreated, description, title, categories = None, enclosure = None, link = "", permalink = "", postid = None, source = None, userid = "", 
+        mt_allow_comments = None, mt_allow_pings = None, mt_convert_breaks = None, mt_text_more = "", mt_excerpt = "", mt_keywords = "", wp_slug = ""):
+        self.dateCreated = dateCreated
+        self.description = description
+        self.title = title
+        self.categories = categories
+        self.enclosure = enclosure
+        self.link = link
+        self.permalink = permalink
+        self.postid = postid
+        self.source = source 
+        self.userid = userid
+        self.mt_allow_comments = mt_allow_comments
+        self.mt_allow_pings = mt_allow_pings
+        self.mt_convert_breaks = mt_convert_breaks
+        self.mt_text_more = mt_text_more
+        self.mt_excerpt = mt_excerpt
+        self.mt_keywords = mt_keywords
+        self.wp_slug = wp_slug
+
+class WpCategory:
+    def __init__(self, name, parent_id, slug = "", description = ""):
+        # self.dict = {'name':name, 'parent_id':parent_id, 'slug':slug, 'description':description}
+        self.name = name 
+        self.parent_id = parent_id
+        self.slug = slug
+        self.description = description
+
+class FileData:
+    def __init__(self, data, name, type):
+        self.bits = base64.encodestring(data)
+        self.name = name
+        self.type = type
+
 def main():
     pass
     
