@@ -8,3 +8,21 @@
 	path = Utility/EvernotePython_Dev
 	url = https://github.com/evernote/evernote-sdk-python3
 	branch = dev
+[submodule "Utility/RAuth"]
+	path = Utility/RAuth
+	url = https://github.com/litl/rauth
+[submodule "Utility/oauth2"]
+	path = Utility/oauth2
+	url = https://github.com/simplegeo/python-oauth2
+[submodule "Utility/httplib2"]
+	path = Utility/httplib2
+	url = https://github.com/uggedal/httplib2
+[submodule "Utility/pyramid"]
+	path = Utility/pyramid
+	url = https://github.com/Pylons/pyramid
+[submodule "Utility/django"]
+	path = Utility/django
+	url = https://github.com/omab/django-social-auth
+[submodule "Utility/skydrive"]
+	path = Utility/skydrive
+	url = https://github.com/mk-fg/python-skydrive
