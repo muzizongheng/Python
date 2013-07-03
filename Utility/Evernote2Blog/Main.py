@@ -76,9 +76,10 @@ for notebook in notebooks:
 	    nextOffset += len(noteList.notes)
 
 	    #create blog category by tags
-		if evernote.isCreateTags:
-			tagslist = noteStore.listTagsByNotebook(authToken, notebook.guid)
+	    if evernote.isCreateTags == True:			
+		    tagslist = noteStore.listTagsByNotebook(authToken, notebook.guid)
 		    categories = convertTags2Category(tagslist)
+
 		    try:
 		        for c in categories:
 		            metaweblog.new_category(c)
