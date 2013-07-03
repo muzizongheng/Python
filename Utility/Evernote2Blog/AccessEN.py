@@ -181,6 +181,11 @@ class Evernote:
         return noteStore
 
     #init config 
+    # "authToken":"your dev auth token",
+    # "noteStoreUrl":"your store",
+    # "blogType":"your blog api",
+    # "username":"",
+    # "password":"",
     def initConfig(self):
         #read config
         input_text = open('config').read()
