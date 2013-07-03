@@ -52,6 +52,7 @@ metaweblog = evernote.initBlog()
 # List all of the notebooks in the user's account        
 notebooks = noteStore.listNotebooks(authToken)
 print("Found ", len(notebooks), " notebooks:")
+
 for notebook in notebooks:
     print("  * ", notebook.name)
 
@@ -61,7 +62,7 @@ for notebook in notebooks:
 
     filter = NoteStore.NoteFilter()
     filter.notebookGuid = notebook.guid
-    noteList = noteStore.findNotes(authToken, filter, 0, 50)
+    noteList = noteStore.findNotes(authToken, filter, 0, 500)
 
     #create blog category by tags
     # tagslist = noteStore.listTagsByNotebook(authToken, notebook.guid)
@@ -135,9 +136,8 @@ for notebook in notebooks:
             print(e)
 
             #reinit blog
-            self.metaweblog = AccessEN.initBlog()
+            metaweblog = evernote.initBlog()
             print("Support method: ", self.metaweblog.list_methods())
-            metaweblog = self.metaweblog
         finally:
             pass
 
