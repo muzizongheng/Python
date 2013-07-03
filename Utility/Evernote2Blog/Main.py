@@ -65,103 +65,114 @@ for notebook in notebooks:
     noteCount = noteStore.findNoteCounts(authToken, filter, False).notebookCounts[notebook.guid]
     print("Find note counts: %i of %s"%(noteCount, notebook.name))
 
-    noteList = noteStore.findNotes(authToken, filter, 0, noteCount)
-    print("Get %i notes\n"%(len(noteList.notes)))
+    #set note offset to loop find
+    nextOffset = 0
 
-    #create blog category by tags
-    # tagslist = noteStore.listTagsByNotebook(authToken, notebook.guid)
-    # categories = convertTags2Category(tagslist)
-    # try:
-    #     for c in categories:
-    #         metaweblog.new_category(c)
-    #         print("create blog's category: ", c.name)
-    # except Exception as err:
-    #     print("Create category failed: ", err)
-    # finally:
-    #     pass
+    while nextOffset <  noteCount:
+	    noteList = noteStore.findNotes(authToken, filter, nextOffset, noteCount)
+	    print("Get %i notes, currrent note offset: %i\n"%(len(noteList.notes), nextOffset))
 
-    #print noteList
-    for n in noteList.notes:
-        print(n.title)
+	    #increase offset for next find
+	    nextOffset += len(noteList.notes)
 
-        if (n.title+'\n' in currentBlogs) | (n.title in currentBlogs):
-            continue
+	    #create blog category by tags
+	    # tagslist = noteStore.listTagsByNotebook(authToken, notebook.guid)
+	    # categories = convertTags2Category(tagslist)
+	    # try:
+	    #     for c in categories:
+	    #         metaweblog.new_category(c)
+	    #         print("create blog's category: ", c.name)
+	    # except Exception as err:
+	    #     print("Create category failed: ", err)
+	    # finally:
+	    #     pass
 
-        #set note's tilte to blog id, and use blog id to host note's resource
-        blogId = n.title
+	    #print noteList
+	    for n in noteList.notes:
+	        print(n.title)
 
-        #get note raw content
-        content = noteStore.getNoteContent(authToken, n.guid)
+	        if (n.title+'\n' in currentBlogs) | (n.title in currentBlogs):
+	            continue
 
-        #add title to content
-        #content = addTitle2Content(content, n.title)
+	        #set note's tilte to blog id, and use blog id to host note's resource
+	        blogId = n.title
 
-        #apply tags to blog
-        tags = noteStore.getNoteTagNames(authToken, n.guid)
+	        #get note raw content
+	        content = noteStore.getNoteContent(authToken, n.guid)
 
-        #get resource & write to local    
-        try:
-            if n.resources is not None:
-                for res in n.resources:
-                    print("guid is: " + res.guid)
-                    print("width is: ", res.width)
-                    print("height is: ", res.height)
-                    print("resource type is: ", res.mime)
+	        #add title to content
+	        #content = addTitle2Content(content, n.title)
 
-                    attachment = noteStore.getResource(authToken, res.guid, True, False, True, False)
+	        #apply tags to blog
+	        tags = noteStore.getNoteTagNames(authToken, n.guid)
 
-                    #fileType = getMediaType(res.mime)
-                    # attachmentFile = open(res.guid+"."+fileType, "wb")
-                    # attachmentFile.write(attachment.data.body)
-                    # attachmentFile.close()
+	        #get resource & write to local    
+	        try:
+	            if n.resources is not None:
+	                for res in n.resources:
+	                    print("guid is: " + res.guid)
+	                    print("width is: ", res.width)
+	                    print("height is: ", res.height)
+	                    print("resource type is: ", res.mime)
 
-                    #upload resource to blog
-                    fileData = AccessBlog.FileData(attachment.data.body, res.guid, res.mime)
-                    fileUrl = metaweblog.new_media_object(fileData)
+	                    attachment = noteStore.getResource(authToken, res.guid, True, False, True, False)
 
-                    #calculate hashcode for media
-                    md5 = hashlib.md5()
-                    md5.update(attachment.data.body)
-                    hashcode = md5.hexdigest()
-                    print("hast code: ", hashcode)
+	                    #fileType = getMediaType(res.mime)
+	                    # attachmentFile = open(res.guid+"."+fileType, "wb")
+	                    # attachmentFile.write(attachment.data.body)
+	                    # attachmentFile.close()
 
-                    #replace en-media to img
-                    content = replaceEnMediaWithImg(content, fileUrl.url, hashcode)
-        except Exception as e:
-            print(e)
-        finally:
-            pass
+	                    #upload resource to blog
+	                    fileData = AccessBlog.FileData(attachment.data.body, res.guid, res.mime)
+	                    fileUrl = metaweblog.new_media_object(fileData)
 
-        try:
-            #publish note to blog
-            post = AccessBlog.Post(datetime.now(), content, n.title, tags)
-            metaweblog.new_post(post, True)
-        except Exception as e:
-            print(e)
+	                    #calculate hashcode for media
+	                    md5 = hashlib.md5()
+	                    md5.update(attachment.data.body)
+	                    hashcode = md5.hexdigest()
+	                    print("hast code: ", hashcode)
 
-            #reinit blog
-            metaweblog = evernote.initBlog()
-            print("Support method: ", metaweblog.list_methods())
-        finally:
-            pass
+	                    #replace en-media to img
+	                    content = replaceEnMediaWithImg(content, fileUrl.url, hashcode)
+	        except Exception as e:
+	            print(e)
+	        finally:
+	            pass
 
-        #write note to existed file, and do not sync it in next time
-        existedBlog.write(n.title+'\n')
+	        try:
+	            #publish note to blog
+	            post = AccessBlog.Post(datetime.now(), content, n.title, tags)
+	            metaweblog.new_post(post, True)
+	        except Exception as e:
+	            print(e)
 
-        time.sleep(60)
+	            #reinit blog
+	            metaweblog = evernote.initBlog()
+	            print("Support method: ", metaweblog.list_methods())
+	        finally:
+	            pass
 
-        # #write note
-        # try:
-        #     f = open(n.guid+".html", "w+", encoding='utf-8-sig')
-        #     f.write(content)
-        #     f.close()
-        # except Exception as err:
-        #     print(err)
+	        #write note to existed file, and do not sync it in next time
+	        existedBlog.write(n.title+'\n')
 
-        print()
+	        time.sleep(60)
 
-    print()
+	        # #write note
+	        # try:
+	        #     f = open(n.guid+".html", "w+", encoding='utf-8-sig')
+	        #     f.write(content)
+	        #     f.close()
+	        # except Exception as err:
+	        #     print(err)
 
+	        print()
+
+	    print()
+
+    else:
+    	print("get total notes of (%s) finished."%(notebook.name))
+
+  	
 existedBlog.close()
 
 print("publish notes to blog successfully")
