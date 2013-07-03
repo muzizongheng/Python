@@ -137,26 +137,28 @@ for notebook in notebooks:
 	        finally:
 	            pass
 
-	        try:
-	            #publish note to blog
-	            post = AccessBlog.Post(datetime.now(), content, n.title, tags)
-	            metaweblog.new_post(post, True)
+	        #publish note to blog
+	        post = AccessBlog.Post(datetime.now(), content, n.title, tags)
+	        while True:
+		        try:
+		            metaweblog.new_post(post, True)
 
-	            print("publish note(%s) to blog successfully"%(n.title))
-	        except Exception as e:
-	            print(e)
+		            print("publish note(%s) to blog successfully"%(n.title))
+		            break
+		        except Exception as e:
+		            print(e)
 
-	            #reinit blog
-	            metaweblog = evernote.initBlog()
-	            print("Support method: ", metaweblog.list_methods())
-	        finally:
-	            pass
+		            #reinit blog
+		            metaweblog = evernote.initBlog()
+		            print("Support method: ", metaweblog.list_methods())
+		        finally:
+		            pass
 
 	        #write note to existed file, and do not sync it in next time
 	        existedBlog.write(n.title+'\n')
 	        existedBlog.flush()
 
-	        time.sleep(60)
+	        time.sleep(1)
 
 	        # #write note
 	        # try:
