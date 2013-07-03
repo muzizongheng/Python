@@ -26,3 +26,6 @@
 [submodule "Utility/skydrive"]
 	path = Utility/skydrive
 	url = https://github.com/mk-fg/python-skydrive
+[submodule "Utility/txskydrive"]
+	path = Utility/txskydrive
+	url = https://github.com/mk-fg/txskydrive
