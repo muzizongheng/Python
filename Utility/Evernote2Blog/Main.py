@@ -59,10 +59,14 @@ for notebook in notebooks:
     if notebook.name != "自我心的":
         continue
 
-
     filter = NoteStore.NoteFilter()
     filter.notebookGuid = notebook.guid
-    noteList = noteStore.findNotes(authToken, filter, 0, 500)
+
+    noteCount = noteStore.findNoteCounts(authToken, filter, False).notebookCounts[notebook.guid]
+    print("Find note counts: %i of %s"%(noteCount, notebook.name))
+
+    noteList = noteStore.findNotes(authToken, filter, 0, noteCount)
+    print("Get %i notes\n"%(len(noteList.notes)))
 
     #create blog category by tags
     # tagslist = noteStore.listTagsByNotebook(authToken, notebook.guid)
@@ -137,7 +141,7 @@ for notebook in notebooks:
 
             #reinit blog
             metaweblog = evernote.initBlog()
-            print("Support method: ", self.metaweblog.list_methods())
+            print("Support method: ", metaweblog.list_methods())
         finally:
             pass
 

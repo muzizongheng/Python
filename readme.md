@@ -1,3 +1,8 @@
 #README.md
-A test for git project connected by sublime text 2 git plugin
-asdfasdf asdf sdf
+This repos include utility and learning python directories.
+
+#Utility
+This repos include my developed daily tools
+
+#Leaning Python
+This repos include my learning code for python.
