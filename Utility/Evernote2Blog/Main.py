@@ -131,7 +131,7 @@ for notebook in notebooks:
 	                    print("hast code: ", hashcode)
 
 	                    #replace en-media to img
-	                    content = replaceEnMediaWithImg(content, fileUrl.url, hashcode)
+	                    content = evernote.replaceEnMediaWithImg(content, fileUrl.url, hashcode)
 	        except Exception as e:
 	            print(e)
 	        finally:
@@ -157,7 +157,7 @@ for notebook in notebooks:
 	        existedBlog.write(n.title+'\n')
 	        existedBlog.flush()
 
-	        time.sleep(1)
+	        time.sleep(30)
 
 	        # #write note
 	        # try:
