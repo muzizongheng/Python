@@ -154,6 +154,7 @@ for notebook in notebooks:
 
 	        #write note to existed file, and do not sync it in next time
 	        existedBlog.write(n.title+'\n')
+	        existedBlog.flush()
 
 	        time.sleep(60)
 
