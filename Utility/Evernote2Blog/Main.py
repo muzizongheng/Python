@@ -150,7 +150,6 @@ for notebook in notebooks:
 
 		            #reinit blog
 		            metaweblog = evernote.initBlog()
-		            print("Support method: ", metaweblog.list_methods())
 		        finally:
 		            pass
 
