@@ -56,7 +56,7 @@ print("Found ", len(notebooks), " notebooks:")
 for notebook in notebooks:
     print("  * ", notebook.name)
 
-    if notebook.name != "自我心的":
+    if notebook.name != evernote.syncNotebook:
         continue
 
     filter = NoteStore.NoteFilter()
@@ -76,16 +76,17 @@ for notebook in notebooks:
 	    nextOffset += len(noteList.notes)
 
 	    #create blog category by tags
-	    # tagslist = noteStore.listTagsByNotebook(authToken, notebook.guid)
-	    # categories = convertTags2Category(tagslist)
-	    # try:
-	    #     for c in categories:
-	    #         metaweblog.new_category(c)
-	    #         print("create blog's category: ", c.name)
-	    # except Exception as err:
-	    #     print("Create category failed: ", err)
-	    # finally:
-	    #     pass
+		if evernote.isCreateTags:
+			tagslist = noteStore.listTagsByNotebook(authToken, notebook.guid)
+		    categories = convertTags2Category(tagslist)
+		    try:
+		        for c in categories:
+		            metaweblog.new_category(c)
+		            print("create blog's category: ", c.name)
+		    except Exception as err:
+		        print("Create category failed: ", err)
+		    finally:
+		        pass
 
 	    #print noteList
 	    for n in noteList.notes:
@@ -94,17 +95,13 @@ for notebook in notebooks:
 	        if (n.title+'\n' in currentBlogs) | (n.title in currentBlogs):
 	            continue
 
-	        #set note's tilte to blog id, and use blog id to host note's resource
-	        blogId = n.title
-
 	        #get note raw content
 	        content = noteStore.getNoteContent(authToken, n.guid)
-
-	        #add title to content
-	        #content = addTitle2Content(content, n.title)
+	        print("get note(%s) content successfuly"%(n.title))
 
 	        #apply tags to blog
 	        tags = noteStore.getNoteTagNames(authToken, n.guid)
+	        print("get note(%s) tags successfuly"%(n.title))
 
 	        #get resource & write to local    
 	        try:
@@ -143,6 +140,8 @@ for notebook in notebooks:
 	            #publish note to blog
 	            post = AccessBlog.Post(datetime.now(), content, n.title, tags)
 	            metaweblog.new_post(post, True)
+
+	            print("publish note(%s) to blog successfully"%(n.title))
 	        except Exception as e:
 	            print(e)
 

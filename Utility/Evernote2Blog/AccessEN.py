@@ -41,6 +41,8 @@ class Evernote:
         self.username = ""
         self.password = ""
         self.existedBlog = None
+        self.isCreateTags = False
+        self.syncNotebook = "自我心的"
 
     #add title tag to html
     def addTitle2Content(html, title):
@@ -193,11 +195,15 @@ class Evernote:
         reader = json.JSONDecoder()
         config = reader.decode(input_json)
 
+        print(config)
+        
         self.authToken = config["authToken"]
         self.noteStoreUrl = config["noteStoreUrl"]
         self.blogType = config["blogType"]
         self.username = config["username"]
         self.password = config["password"]
+        self.isCreateTags = config["isCreateTags"]
+        self.syncNotebook = config["syncNotebook"]
 
     #init published notes from file
     def initExistedBlog(self):
