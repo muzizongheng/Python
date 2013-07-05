@@ -96,6 +96,10 @@ for notebook in notebooks:
         for n in noteList.notes:
             print(n.title)
 
+            #print processed count
+            processedBlogCount = processedBlogCount + 1
+            print("processing %i blog"%(processedBlogCount))
+
             if (n.title+'\n' in currentBlogs) | (n.title in currentBlogs):
                 continue
 
@@ -155,9 +159,6 @@ for notebook in notebooks:
                     metaweblog = evernote.initBlog()
                 finally:
                     pass
-                    
-            processedBlogCount = processedBlogCount + 1
-            print("processed %i blog"%(processedBlogCount))
 
             #write note to existed file, and do not sync it in next time
             existedBlog.write(n.title+'\n')
