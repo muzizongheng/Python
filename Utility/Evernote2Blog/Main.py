@@ -38,8 +38,9 @@ import AccessBlog
 #init evernote
 evernote = AccessEN.Evernote()
 
-#init config & existed blog
+#init config & existed blog & ping service urls
 evernote.initConfig()
+evernote.initPingServiceUrls()
 currentBlogs = evernote.initExistedBlog()
 existedBlog = evernote.existedBlog
 
@@ -66,7 +67,7 @@ for notebook in notebooks:
     filter.notebookGuid = notebook.guid
 
     noteCount = noteStore.findNoteCounts(authToken, filter, False).notebookCounts[notebook.guid]
-    print("Find note counts: %i of %s"%(noteCount, notebook.name))
+    print("Find note counts: %i of %s, guid is: %s"%(noteCount, notebook.name, notebook.guid))
 
     #set note offset to loop find
     nextOffset = 0
@@ -148,9 +149,14 @@ for notebook in notebooks:
             post = AccessBlog.Post(datetime.now(), content, n.title, tags)
             while True:
                 try:
-                    metaweblog.new_post(post, True)
+                    url = metaweblog.new_post(post, True)
 
+                    print("new post url: ", url)
                     print("publish note(%s) to blog successfully"%(n.title))
+
+                    #ping search engine 
+                    evernote.pingBlog(url)
+
                     break
                 except Exception as e:
                     print(e)

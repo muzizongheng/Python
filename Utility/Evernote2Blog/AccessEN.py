@@ -16,6 +16,7 @@ import time
 import re
 import shutil
 import json
+import xmlrpc.client
 from datetime import datetime
 
 if "..\\Evernote\\lib" not in sys.path:
@@ -37,10 +38,15 @@ class Evernote:
     def __init__(self):
         self.authToken = ""
         self.noteStoreUrl = ""
-        self.blogType = "cnblogs"
+        self.blogServer= ""
+        self.blogName=""
+        self.blogUrl = ""
+        self.blogNewPostUrl = ""
+        self.blogRSS = ""
         self.username = ""
         self.password = ""
         self.existedBlog = None
+        self.pingServiceUrls = None
         self.isCreateTags = False
         self.syncNotebook = "自我心的"
 
@@ -117,17 +123,11 @@ class Evernote:
 
     #init blog (include: blog api, username, password)
     def initBlog(self):    
-        if self.blogType == "":
-            self.blogType = input("Please choose your blog api type, must be one of 'sina' or 'cnblogs'")
+        if self.blogServer == "":
+            self.blogServer = input("Please choose your blog  server api url: ")
 
-        self.blogType = self.blogType.lower()
-
-        if self.blogType == "sina":
-            self.server = "http://upload.move.blog.sina.com.cn/blog_rebuild/blog/xmlrpc.php"#"http://muzizongheng.cnblogs.com/services/metablogapi.aspx"
-        else:
-            self.server = "http://muzizongheng.cnblogs.com/services/metablogapi.aspx"
-
-        print("blog server: ", self.server)    
+        self.blogServer = self.blogServer.lower()
+        print("blog server: ", self.blogServer)    
 
         if self.username == "":
             self.username = input("Please input your username: ")
@@ -135,7 +135,7 @@ class Evernote:
         if self.password == "":
             self.password = input("Please input your password: ")
 
-        self.metaweblog = AccessBlog.WordPress(self.server, self.username, self.password)#AccessBlog.MetaWeblog(server, username, password)
+        self.metaweblog = AccessBlog.WordPress(self.blogServer, self.username, self.password)#AccessBlog.MetaWeblog(server, username, password)
         print("Support method: ", self.metaweblog.list_methods())
 
         return self.metaweblog
@@ -185,7 +185,11 @@ class Evernote:
     #init config 
     # "authToken":"your dev auth token",
     # "noteStoreUrl":"your store",
-    # "blogType":"your blog api",
+    # "blogServer":"http://your blog api url",
+    # "blogName":"your blog name",
+    # "blogUrl":"your blog url",
+    # "blogNewPostUrl":"your new post need to ping",
+    # "blogRSS":"your rss url",
     # "username":"",
     # "password":"",
     def initConfig(self):
@@ -199,7 +203,11 @@ class Evernote:
         
         self.authToken = config["authToken"]
         self.noteStoreUrl = config["noteStoreUrl"]
-        self.blogType = config["blogType"]
+        self.blogServer = config["blogServer"]
+        self.blogName = config["blogName"]
+        self.blogUrl = config["blogUrl"]
+        self.blogNewPostUrl = config["blogNewPostUrl"]
+        self.blogRSS = config["blogRSS"]
         self.username = config["username"]
         self.password = config["password"]
         self.isCreateTags = config["isCreateTags"]
@@ -214,3 +222,27 @@ class Evernote:
         currentBlogs = self.existedBlog.readlines()
 
         return currentBlogs
+
+    def initPingServiceUrls(self):
+        pingServiceUrls = open("pingcfg", "r")
+        pingServiceUrls.seek(0)
+
+        self.pingServiceUrls = pingServiceUrls.readlines()
+        print(self.pingServiceUrls)
+
+    #ping search engine's ping service 
+    def pingBlog(self, url):
+        blogNewPostUrl = self.blogNewPostUrl%url
+        print(blogNewPostUrl)
+
+        for u in self.pingServiceUrls:
+            try:
+                server = xmlrpc.client.ServerProxy(u)
+
+                response = server.weblogUpdates.extendedPing(self.blogName , self.blogUrl ,  blogNewPostUrl, self.blogRSS)
+                
+                print(response)                    
+            except Exception as err:
+                print("ping ", u, " failed: ", err)
+            finally:
+                pass
