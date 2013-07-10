@@ -1,0 +1,11 @@
+"authToken":"",
+"noteStoreUrl":"",
+"blogServer":"",
+"blogName":"",
+"blogUrl":"http://www.cnblogs.com/muzizongheng",
+"blogNewPostUrl":"http://www.cnblogs.com/muzizongheng/p/%s.html",
+"blogRSS":"http://www.cnblogs.com/muzizongheng/rss",
+"username":"",
+"password":"",
+"isCreateTags":"True",
+"syncNotebook":""
