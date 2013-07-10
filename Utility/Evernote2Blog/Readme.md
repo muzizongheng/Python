@@ -8,15 +8,15 @@ This utility use evernote's dev token and noteStore url (these information you c
 This utility use two config files.
 
 "config" config your auth token, notestoreUrl, username, password, and so on. May be like this:  
-    "authToken":"your evernote dev auth token",  
-    "noteStoreUrl":"your evernote store",  
-    "blogServer":"http://your blog api url",  
-    "blogName":"your blog name",  
-    "blogUrl":"your blog url",  
-    "blogNewPostUrl":"your new post need to ping",  
-    "blogRSS":"your rss url",  
-    "username":"",  
-    "password":"",  
+    *"authToken":"your evernote dev auth token",  
+    *"noteStoreUrl":"your evernote store",  
+    *"blogServer":"http://your blog api url",  
+    *"blogName":"your blog name",  
+    *"blogUrl":"your blog url",  
+    *"blogNewPostUrl":"your new post need to ping",  
+    *"blogRSS":"your rss url",  
+    *"username":"",  
+    *"password":"",  
 
 get your evernote authtoken & notesStoreUrl(https://www.evernote.com/api/DeveloperToken.action)
 
