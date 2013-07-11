@@ -232,7 +232,8 @@ class Evernote:
 
     #ping search engine's ping service 
     def pingBlog(self, url):
-        blogNewPostUrl = self.blogNewPostUrl%url
+        if url[-5:] != ".html":
+            blogNewPostUrl = self.blogNewPostUrl%url
         print(blogNewPostUrl)
 
         for u in self.pingServiceUrls:
