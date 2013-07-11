@@ -194,7 +194,7 @@ class Evernote:
     # "password":"",
     def initConfig(self):
         #read config
-        input_text = open('config').read()
+        input_text = open('config', "r", encoding='utf-8-sig').read()
         input_json = "{%(input_text)s}" % vars() 
         reader = json.JSONDecoder()
         config = reader.decode(input_json)
@@ -215,7 +215,7 @@ class Evernote:
 
     #init published notes from file
     def initExistedBlog(self):
-        self.existedBlog = open("existedBlog", "r+")
+        self.existedBlog = open("existedBlog", "r+", encoding='utf-8-sig')
         shutil.copyfile("existedBlog", "existedBlog.bak")
 
         self.existedBlog.seek(0)
@@ -224,7 +224,7 @@ class Evernote:
         return currentBlogs
 
     def initPingServiceUrls(self):
-        pingServiceUrls = open("pingcfg", "r")
+        pingServiceUrls = open("pingcfg", "r", encoding='utf-8-sig')
         pingServiceUrls.seek(0)
 
         self.pingServiceUrls = pingServiceUrls.readlines()
