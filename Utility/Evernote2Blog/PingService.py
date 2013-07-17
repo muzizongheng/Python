@@ -16,9 +16,10 @@ metaweblog = evernote.initBlog()
 
 print(metaweblog.list_methods())
 
+#get all posts
+allBlogs = metaweblog.get_recent_posts(1000)
 
-allBlogs = metaweblog.get_recent_posts(200)
-
+#ping them to server
 for b in allBlogs:
 	print(b['permalink'])
 	evernote.pingBlog(b['permalink'])
