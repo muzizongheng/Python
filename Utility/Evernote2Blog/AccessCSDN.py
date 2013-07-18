@@ -6,6 +6,10 @@ import base64
 from http import cookiejar
 import urllib.request, urllib.parse, urllib.error
 
+#userName & password
+userName = ""
+password = ""
+
 #url for accessing
 csdnLoginUrl = r"http://passport.csdn.net/ajax/accounthandler.ashx?"
 moduleUrl = r"http://write.blog.csdn.net/"
@@ -13,6 +17,9 @@ csdnAccessModuleUrl = r"http://passport.csdn.net/account/loginbox?callback=login
 
 def login_csdn():	
 	print("begin to login csdn")
+
+	if userName == "" or password == "":
+		raise Exception("you must input userName or password")
 
 	#install cookie
 	cj = cookiejar.CookieJar();
@@ -42,8 +49,8 @@ def login_csdn():
 	#build request for login url
 	#post data
 	postdata = {
-	    'u':'muzizongheng',
-	    'p':'abc.123',
+	    'u':userName,
+	    'p':password,
 	    'remember':'1',
 	    't':'log',
 	    'f':urllib.parse.quote(moduleUrl),
