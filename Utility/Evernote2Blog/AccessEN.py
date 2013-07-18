@@ -50,8 +50,11 @@ class Evernote:
         self.isCreateTags = False
         self.syncNotebook = "自我心的"
 
+        #special for csdn blog, because it do not support metaweblog api.
+        self.isCSDNBlog = False
+
     #add title tag to html
-    def addTitle2Content(html, title):
+    def addTitle2Content(self, html, title):
         declare = "<!DOCTYPE en-note SYSTEM \"http://xml.evernote.com/pub/enml2.dtd\">"
         replace = declare+"<title>"+title+"</title>"
 
@@ -60,7 +63,7 @@ class Evernote:
         return html.replace(declare, replace)
 
     #add evernote's tags to html
-    def addTags2Content(html, tags):
+    def addTags2Content(self, html, tags):
         if tags is None:
             return html;
 
@@ -73,7 +76,7 @@ class Evernote:
         return html+data;
 
     #convert en-media node to img node of html
-    def replaceEnMediaWithImg(html, fileSrc, hashCode):
+    def replaceEnMediaWithImg(self, html, fileSrc, hashCode):
         if html == "":
             return ""
 
@@ -103,7 +106,7 @@ class Evernote:
         return html.replace(enmedia, result)
 
     #get media type from mime
-    def getMediaType(enMedia):
+    def getMediaType(self, enMedia):
         if enMedia == "":
             return
 
@@ -113,7 +116,7 @@ class Evernote:
         return enMedia[index:]
 
     #convert notebook's tags to blog's category
-    def convertTags2Category(tags):
+    def convertTags2Category(self, tags):
         result = []
         for t in tags:
             c = AccessBlog.WpCategory(t.name, 0)
@@ -134,6 +137,11 @@ class Evernote:
         
         if self.password == "":
             self.password = input("Please input your password: ")
+
+        #judge blog url is csdn blog or not
+        if "csdn.net" in self.blogServer:
+            self.isCSDNBlog = True
+            return None
 
         self.metaweblog = AccessBlog.WordPress(self.blogServer, self.username, self.password)#AccessBlog.MetaWeblog(server, username, password)
         print("Support method: ", self.metaweblog.list_methods())
@@ -215,7 +223,7 @@ class Evernote:
 
     #init published notes from file
     def initExistedBlog(self):
-        self.existedBlog = open("existedBlog", "r+", encoding='utf-8-sig')
+        self.existedBlog = open("existedBlog", "r+")#, encoding='utf-8-sig')
         shutil.copyfile("existedBlog", "existedBlog.bak")
 
         self.existedBlog.seek(0)
@@ -231,8 +239,31 @@ class Evernote:
         print(self.pingServiceUrls)
 
     #ping search engine's ping service 
+    # http://ping.baidu.com/ping/RPC2
+    # http://rpc.pingomatic.com/
+    # http://api.moreover.com/ping
+    # http://api.my.yahoo.com/rss/ping
+    # http://blogsearch.google.com/ping/RPC2
+    # http://ping.bitacoras.com
+    # http://ping.feedburner.com
+    # http://ping.syndic8.com/xmlrpc.php
+    # http://rpc.blogrolling.com/pinger/
+    # http://rpc.icerocket.com:10080/
+    # http://rpc.technorati.com/rpc/ping
+    # http://rpc.weblogs.com/RPC2
+    # http://topicexchange.com/RPC2
+    # http://www.blogdigger.com/RPC2
+    # http://www.blogoole.com/ping/
+    # http://www.popdex.com/addsite.php
+    # http://www.wasalive.com/ping/
+    # http://www.weblogues.com/RPC/
+    # http://blogping.unidatum.com/RPC2/
+    # http://www.xianguo.com/xmlrpc/ping.php
+    # http://www.zhuaxia.com/rpc/server.php
+    # http://blog.youdao.com/ping/RPC2
     def pingBlog(self, url):
-        if url[-5:] != ".html":
+        blogNewPostUrl = url
+        if url[0:7] != "http://":
             blogNewPostUrl = self.blogNewPostUrl%url
         print(blogNewPostUrl)
 

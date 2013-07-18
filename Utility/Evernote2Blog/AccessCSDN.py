@@ -6,6 +6,8 @@ import base64
 from http import cookiejar
 import urllib.request, urllib.parse, urllib.error
 
+import json
+
 #userName & password
 userName = ""
 password = ""
@@ -13,6 +15,7 @@ password = ""
 #url for accessing
 csdnLoginUrl = r"http://passport.csdn.net/ajax/accounthandler.ashx?"
 moduleUrl = r"http://write.blog.csdn.net/"
+postNewUrl = 'http://write.blog.csdn.net/postedit?edit=1'
 csdnAccessModuleUrl = r"http://passport.csdn.net/account/loginbox?callback=logined&hidethird=1&from="+urllib.parse.quote(moduleUrl)#http%3a%2f%2fwrite.blog.csdn.net%2f"
 
 def login_csdn():	
@@ -84,6 +87,8 @@ def login_csdn():
 
 	return cj
 
+#typ: 1,原创； 2，转载
+#chnl：0，空；16，编程语言
 def new_post(title, content, categories, tag2, postType = 1, description = ""):
 	print("begin to publish blog")
 
@@ -94,26 +99,24 @@ def new_post(title, content, categories, tag2, postType = 1, description = ""):
 		'tags':categories,
 		'tag2':tag2,
 		'typ':postType,
-		'chnl':0,
+		'chnl':16, 
 		'comm':2,
-		'level':0,
+		'level':0, 
 		'artid':0,
 		'stat':'publish'
 	}
 
-	posteditUrl = 'http://write.blog.csdn.net/postedit'
 	postdata = urllib.parse.urlencode(postdata).encode('utf-8')
 	print(postdata)
 
 	req = urllib.request.Request(
-	url = posteditUrl+'?edit=1',
+	url = postNewUrl,
 	data = postdata)
 
 	req.add_header('Accept', 'text/html, application/xhtml+xml, */*');
 	req.add_header('Accept-Language', 'en-US')
 	req.add_header('Accept-Encoding', 'gzip, deflate')
 	req.add_header('Connection', 'Keep-Alive');
-	req.add_header('Referer', posteditUrl)
 	req.add_header('User-Agent', 'Mozilla/5.0 (compatible; MSIE 9.0; Windows NT 6.1; WOW64; Trident/5.0)');
 
 	#open login url
@@ -125,11 +128,15 @@ def new_post(title, content, categories, tag2, postType = 1, description = ""):
 	print(r.info())
 
 	data = r.read().decode('utf-8')
-	print(data)
+
+	reader = json.JSONDecoder()
+	responseData = reader.decode(data)
+	return responseData['data']
 
 def main():
 	login_csdn()
-	new_post("title", "content", "categories", "tag2")
+	url = new_post("title", "content", "categories", "tag2")
+	print(url)
 
 
 if __name__ == "__main__":

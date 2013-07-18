@@ -33,6 +33,22 @@ import evernote.edam.error.ttypes as Errors
 
 import AccessEN 
 import AccessBlog
+import AccessCSDN
+
+#below is blog config for cnblogs 
+# "blogServer":"http://www.cnblogs.com/muzizongheng/services/metaweblog.aspx",
+# "blogName":"muzizongheng的专栏",
+# "blogUrl":"http://www.cnblogs.com/muzizongheng",
+# "blogNewPostUrl":"http://www.cnblogs.com/muzizongheng/p/%s.html",
+# "blogRSS":"http://www.cnblogs.com/muzizongheng/rss",
+
+#below is blog config for csdn
+# "blogServer":"http://write.blog.csdn.net/",
+# "blogName":"",
+# "blogUrl":"",
+# "blogNewPostUrl":"",
+# "blogRSS":"",
+
 
 #start task to process evernote's notes to convert to blog
 #init evernote
@@ -49,6 +65,9 @@ authToken = evernote.authToken
 
 #init blog
 metaweblog = evernote.initBlog()
+#init csdn blog if blog server is csdn
+if metaweblog == None or evernote.isCSDNBlog == True:
+    AccessCSDN.login_csdn()
 
 # List all of the notebooks in the user's account        
 notebooks = noteStore.listNotebooks(authToken)
@@ -82,16 +101,19 @@ for notebook in notebooks:
         #create blog category by tags
         if evernote.isCreateTags == True:           
             tagslist = noteStore.listTagsByNotebook(authToken, notebook.guid)
-            categories = convertTags2Category(tagslist)
+            
+            #convert tags to categories
+            categories = evernote.convertTags2Category(tagslist)
 
-            try:
-                for c in categories:
-                    metaweblog.new_category(c)
-                    print("create blog's category: ", c.name)
-            except Exception as err:
-                print("Create category failed: ", err)
-            finally:
-                pass
+            if evernote.isCSDNBlog == False:
+                try:
+                    for c in categories:
+                        metaweblog.new_category(c)
+                        print("create blog's category: ", c.name)
+                except Exception as err:
+                    print("Create category failed: ", err)
+                finally:
+                    pass
 
         #print noteList
         for n in noteList.notes:
@@ -112,57 +134,75 @@ for notebook in notebooks:
             tags = noteStore.getNoteTagNames(authToken, n.guid)
             print("get note(%s) tags successfuly"%(n.title))
 
-            #get resource & write to local    
-            try:
-                if n.resources is not None:
-                    for res in n.resources:
-                        print("guid is: " + res.guid)
-                        print("width is: ", res.width)
-                        print("height is: ", res.height)
-                        print("resource type is: ", res.mime)
-
-                        attachment = noteStore.getResource(authToken, res.guid, True, False, True, False)
-
-                        #fileType = getMediaType(res.mime)
-                        # attachmentFile = open(res.guid+"."+fileType, "wb")
-                        # attachmentFile.write(attachment.data.body)
-                        # attachmentFile.close()
-
-                        #upload resource to blog
-                        fileData = AccessBlog.FileData(attachment.data.body, res.guid, res.mime)
-                        fileUrl = metaweblog.new_media_object(fileData)
-
-                        #calculate hashcode for media
-                        md5 = hashlib.md5()
-                        md5.update(attachment.data.body)
-                        hashcode = md5.hexdigest()
-                        print("hast code: ", hashcode)
-
-                        #replace en-media to img
-                        content = evernote.replaceEnMediaWithImg(content, fileUrl.url, hashcode)
-            except Exception as e:
-                print(e)
-            finally:
+            if evernote.isCSDNBlog:
                 pass
+            else:
+                #get resource & write to local    
+                try:
+                    if n.resources is not None:
+                        for res in n.resources:
+                            print("guid is: " + res.guid)
+                            print("width is: ", res.width)
+                            print("height is: ", res.height)
+                            print("resource type is: ", res.mime)
 
-            #publish note to blog
-            post = AccessBlog.Post(datetime.now(), content, n.title, tags)
+                            attachment = noteStore.getResource(authToken, res.guid, True, False, True, False)
+
+                            #fileType = getMediaType(res.mime)
+                            # attachmentFile = open(res.guid+"."+fileType, "wb")
+                            # attachmentFile.write(attachment.data.body)
+                            # attachmentFile.close()
+
+                            #upload resource to blog
+                            fileData = AccessBlog.FileData(attachment.data.body, res.guid, res.mime)
+                            fileUrl = metaweblog.new_media_object(fileData)
+
+                            #calculate hashcode for media
+                            md5 = hashlib.md5()
+                            md5.update(attachment.data.body)
+                            hashcode = md5.hexdigest()
+                            print("hast code: ", hashcode)
+
+                            #replace en-media to img
+                            content = evernote.replaceEnMediaWithImg(content, fileUrl.url, hashcode)
+                except Exception as e:
+                    print(e)
+                finally:
+                    pass
+
+            #build note to blog
+            if evernote.isCSDNBlog:
+                pass
+            else:
+                post = AccessBlog.Post(datetime.now(), content, n.title, tags)
+
+            #publish blog
             while True:
                 try:
-                    url = metaweblog.new_post(post, True)
+                    if evernote.isCSDNBlog:
+                        url = AccessCSDN.new_post(n.title, content, evernote.syncNotebook, tags)
+                    else:
+                        url = metaweblog.new_post(post, True)
 
                     print("new post url: ", url)
                     print("publish note(%s) to blog successfully"%(n.title))
 
-                    #ping search engine 
-                    evernote.pingBlog(url)
+                    try:
+                        #ping search engine 
+                        evernote.pingBlog(url)
+                    except Exception as e:
+                        print(e)                        
+                    finally:
+                        break
 
-                    break
                 except Exception as e:
                     print(e)
 
                     #reinit blog
-                    metaweblog = evernote.initBlog()
+                    if evernote.isCSDNBlog:
+                        AccessCSDN.login_csdn()
+                    else:
+                        metaweblog = evernote.initBlog()
                 finally:
                     pass
 
