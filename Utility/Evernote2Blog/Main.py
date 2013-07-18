@@ -67,6 +67,8 @@ authToken = evernote.authToken
 metaweblog = evernote.initBlog()
 #init csdn blog if blog server is csdn
 if metaweblog == None or evernote.isCSDNBlog == True:
+    AccessCSDN.userName = evernote.username
+    AccessCSDN.passWord = evernote.password
     AccessCSDN.login_csdn()
 
 # List all of the notebooks in the user's account        
