@@ -9,7 +9,7 @@ import urllib.request, urllib.parse, urllib.error
 import json
 
 #userName & password
-userName = ""
+username = ""
 password = ""
 
 #url for accessing
@@ -21,8 +21,11 @@ csdnAccessModuleUrl = r"http://passport.csdn.net/account/loginbox?callback=login
 def login_csdn():	
 	print("begin to login csdn")
 
-	if userName == "" or password == "":
-		raise Exception("you must input userName or password")
+	print("username: ", username)
+	print("password: ", password)
+
+	if username == "" or password == "":
+		raise Exception("you must input username or password")
 
 	#install cookie
 	cj = cookiejar.CookieJar();
@@ -52,7 +55,7 @@ def login_csdn():
 	#build request for login url
 	#post data
 	postdata = {
-	    'u':userName,
+	    'u':username,
 	    'p':password,
 	    'remember':'1',
 	    't':'log',
@@ -135,6 +138,7 @@ def new_post(title, content, categories, tag2, postType = 1, description = ""):
 
 def main():
 	login_csdn()
+
 	url = new_post("title", "content", "categories", "tag2")
 	print(url)
 

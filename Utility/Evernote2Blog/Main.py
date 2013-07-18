@@ -43,11 +43,7 @@ import AccessCSDN
 # "blogRSS":"http://www.cnblogs.com/muzizongheng/rss",
 
 #below is blog config for csdn
-# "blogServer":"http://write.blog.csdn.net/",
-# "blogName":"",
-# "blogUrl":"",
-# "blogNewPostUrl":"",
-# "blogRSS":"",
+# "isUsingCSDNBlog":"True",
 
 
 #start task to process evernote's notes to convert to blog
@@ -67,8 +63,9 @@ authToken = evernote.authToken
 metaweblog = evernote.initBlog()
 #init csdn blog if blog server is csdn
 if evernote.isUsingCSDNBlog == True:
-    AccessCSDN.userName = evernote.username
-    AccessCSDN.passWord = evernote.password
+    AccessCSDN.username = evernote.username
+    AccessCSDN.password = evernote.password
+
     AccessCSDN.login_csdn()
 
 # List all of the notebooks in the user's account        
@@ -90,6 +87,22 @@ for notebook in notebooks:
     noteCount = noteStore.findNoteCounts(authToken, filter, False).notebookCounts[notebook.guid]
     print("Find note counts: %i of %s, guid is: %s"%(noteCount, notebook.name, notebook.guid))
 
+    #create blog category by tags
+    if evernote.isCreateTags == True:           
+        tagslist = noteStore.listTagsByNotebook(authToken, notebook.guid)
+        
+        #convert tags to categories
+        categories = evernote.convertTags2Category(tagslist)
+
+        try:
+            for c in categories:
+                metaweblog.new_category(c)
+                print("create blog's category: ", c.name)
+        except Exception as err:
+            print("Create category failed: ", err)
+        finally:
+            pass
+
     #set note offset to loop find
     nextOffset = 0
 
@@ -100,21 +113,6 @@ for notebook in notebooks:
         #increase offset for next find
         nextOffset += len(noteList.notes)
 
-        #create blog category by tags
-        if evernote.isCreateTags == True:           
-            tagslist = noteStore.listTagsByNotebook(authToken, notebook.guid)
-            
-            #convert tags to categories
-            categories = evernote.convertTags2Category(tagslist)
-
-            try:
-                for c in categories:
-                    metaweblog.new_category(c)
-                    print("create blog's category: ", c.name)
-            except Exception as err:
-                print("Create category failed: ", err)
-            finally:
-                pass
 
         #print noteList
         for n in noteList.notes:

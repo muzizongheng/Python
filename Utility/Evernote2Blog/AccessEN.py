@@ -214,9 +214,9 @@ class Evernote:
         self.blogRSS = config["blogRSS"]
         self.username = config["username"]
         self.password = config["password"]
-        self.isCreateTags = config["isCreateTags"]
+        self.isCreateTags = config["isCreateTags"] == str(True)
         self.syncNotebook = config["syncNotebook"]
-        self.isUsingCSDNBlog = config["isUsingCSDNBlog"]
+        self.isUsingCSDNBlog = config["isUsingCSDNBlog"] == str(True)
 
     #init published notes from file
     def initExistedBlog(self):
