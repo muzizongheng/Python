@@ -170,17 +170,17 @@ for notebook in notebooks:
             post = AccessBlog.Post(datetime.now(), content, n.title, tags)
 
             #publish CSDN blog
-            while True:
+            while True and evernote.isUsingCSDNBlog:
                 try:
-                    if evernote.isUsingCSDNBlog:
-                        url = AccessCSDN.new_post(n.title, content, evernote.syncNotebook, tags)
-                    else:
-                        print("Donot publish blog to CSDN by config")
+                    url = AccessCSDN.new_post(n.title, content, evernote.syncNotebook, tags)
 
-                        break
+                    if url is None:
+                         #reinit blog
+                        AccessCSDN.login_csdn()
+                        continue
 
-                    print("new post url: ", url)
-                    print("publish note(%s) to blog successfully"%(n.title))
+                    print("new csdn post url: ", url)
+                    print("publish note(%s) to csdn blog successfully"%(n.title))
 
                     try:
                         #ping search engine 
@@ -194,18 +194,17 @@ for notebook in notebooks:
                     print(e)
 
                     #reinit blog
-                    if evernote.isUsingCSDNBlog:
-                        AccessCSDN.login_csdn()
+                    AccessCSDN.login_csdn()
                 finally:
                     pass
 
             #publish metaweblog blog
-            while True:
+            while True and evernote.isUsingMetaweblog:
                 try:
                     url = metaweblog.new_post(post, True)
 
-                    print("new post url: ", url)
-                    print("publish note(%s) to blog successfully"%(n.title))
+                    print("new metaweblog post url: ", url)
+                    print("publish note(%s) to metaweblog blog successfully"%(n.title))
 
                     try:
                         #ping search engine 

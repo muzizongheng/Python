@@ -53,6 +53,9 @@ class Evernote:
         #special for csdn blog, because it do not support metaweblog api.
         self.isUsingCSDNBlog = False
 
+        #special for metaweblog
+        self.isUsingMetaweblog = True
+
     #add title tag to html
     def addTitle2Content(self, html, title):
         declare = "<!DOCTYPE en-note SYSTEM \"http://xml.evernote.com/pub/enml2.dtd\">"
@@ -217,6 +220,7 @@ class Evernote:
         self.isCreateTags = config["isCreateTags"] == str(True)
         self.syncNotebook = config["syncNotebook"]
         self.isUsingCSDNBlog = config["isUsingCSDNBlog"] == str(True)
+        self.isUsingMetaweblog = config['isUsingMetaweblog'] == str(True)
 
     #init published notes from file
     def initExistedBlog(self):

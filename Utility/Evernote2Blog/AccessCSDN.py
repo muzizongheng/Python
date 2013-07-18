@@ -134,6 +134,7 @@ def new_post(title, content, categories, tag2, postType = 1, description = ""):
 
 	reader = json.JSONDecoder()
 	responseData = reader.decode(data)
+	print(responseData)
 	return responseData['data']
 
 def main():
