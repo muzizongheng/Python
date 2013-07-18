@@ -51,7 +51,7 @@ class Evernote:
         self.syncNotebook = "自我心的"
 
         #special for csdn blog, because it do not support metaweblog api.
-        self.isCSDNBlog = False
+        self.isUsingCSDNBlog = False
 
     #add title tag to html
     def addTitle2Content(self, html, title):
@@ -138,10 +138,6 @@ class Evernote:
         if self.password == "":
             self.password = input("Please input your password: ")
 
-        #judge blog url is csdn blog or not
-        if "csdn.net" in self.blogServer:
-            self.isCSDNBlog = True
-            return None
 
         self.metaweblog = AccessBlog.WordPress(self.blogServer, self.username, self.password)#AccessBlog.MetaWeblog(server, username, password)
         print("Support method: ", self.metaweblog.list_methods())
@@ -220,6 +216,7 @@ class Evernote:
         self.password = config["password"]
         self.isCreateTags = config["isCreateTags"]
         self.syncNotebook = config["syncNotebook"]
+        self.isUsingCSDNBlog = config["isUsingCSDNBlog"]
 
     #init published notes from file
     def initExistedBlog(self):
