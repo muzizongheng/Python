@@ -1,3 +1,5 @@
+
+
 word = "abcdefg"
 a = word[2]
 
