@@ -8,6 +8,3 @@ blog: http://blog.csdn.net/muzizongheng
 
 #Utility
 This repos include my developed daily tools
-
-#Leaning Python
-This repos include my learning code for python.
