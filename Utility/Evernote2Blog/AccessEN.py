@@ -263,12 +263,12 @@ class Evernote:
     # http://www.zhuaxia.com/rpc/server.php
     # http://blog.youdao.com/ping/RPC2
     def pingBlog(self, url):
-        blogNewPostUrl = url
+        blogNewPostUrl = str(url)
 
         try:
-            if url is not str ||  url[0:7] != "http://":
+            if (len(blogNewPostUrl) <= 7) or (blogNewPostUrl[0:7] != "http://"):
                 blogNewPostUrl = self.blogNewPostUrl%url
-        except Exception, e:
+        except Exception as e:
             print(e)
         finally:
             print(blogNewPostUrl)
