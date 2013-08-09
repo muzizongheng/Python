@@ -21,7 +21,8 @@ config your auth token, notestoreUrl, username, password, and so on. May be like
 
 
 ######"existedBlog" 
-config you do not want to synced notes' title. If you add notes' title to this file, those notes can not be published to blog.     
+config you do not want to synced notes' title. If you add notes' title to this file, those notes can not be published to blog.
+After every note published successfully, utility will add note's title to this config file.      
 
   
 ######"pingcfg"
