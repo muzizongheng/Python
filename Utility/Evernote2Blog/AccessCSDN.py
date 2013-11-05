@@ -95,6 +95,16 @@ def login_csdn():
 def new_post(title, content, categories, tag2, postType = 1, description = ""):
 	print("begin to publish blog")
 
+	global publishToHome
+
+	if publishToHome >= 5:
+		level = 0
+	else:
+		level = 1
+
+		publishToHome = publishToHome + 1
+
+
 	postdata = {
 		'titl':title,
 		'cont':content,
@@ -104,7 +114,7 @@ def new_post(title, content, categories, tag2, postType = 1, description = ""):
 		'typ':postType,
 		'chnl':16, 
 		'comm':2,
-		'level':0, 
+		'level':level, 
 		'artid':0,
 		'stat':'publish'
 	}
