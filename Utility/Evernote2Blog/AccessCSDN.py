@@ -11,6 +11,7 @@ import json
 #userName & password
 username = ""
 password = ""
+publishToHome = 0
 
 #url for accessing
 csdnLoginUrl = r"http://passport.csdn.net/ajax/accounthandler.ashx?"
