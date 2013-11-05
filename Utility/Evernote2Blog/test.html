@@ -1,0 +1,179 @@
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+
+<head>
+
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+
+    <title>会员登录 - 会员中心 - CSDN.NET</title>
+
+    <link href="/Content/style.css" rel="stylesheet" type="text/css" />
+
+    <script type="text/javascript" src="/scripts/jquery-1.4.1.min.js"></script>
+
+    <script type="text/javascript" src="/scripts/csdn.js?v=1.1"></script>
+
+    
+
+</head>
+
+<body>
+
+<script src="/scripts/pub_topnav_2011.js"type="text/javascript"></script>
+
+<div class="full">
+
+
+
+
+
+<div class="logo_login02">
+
+	<img src="/images/logo_login01.gif" />
+
+</div>
+
+<div class="content_login">
+
+<div class="top_bg"></div>
+
+<div style="padding:40px;">
+
+<div class="left_login">
+
+<iframe id="logfrm" src="/account/loginbox?callback=logined&hidethird=1&from=http%3a%2f%2fwrite.blog.csdn.net%2fhelp%2fnotfound%3faspxerrorpath%3d%2fmuzizongheng" style="width:420px;height:220px;" frameborder="0" scrolling="no"></iframe>
+
+</div>
+
+<div class="center_login"></div>
+
+
+
+<div class="right_login">
+
+<p class="tit"></p>
+
+<div class="login_r_c">
+
+还没有CSDN账号?
+
+<a href="/account/register" class="btn">立即注册</a>
+
+</div>
+
+<div class="login_r_p">想发布招聘信息?
+
+<a href="http://hire.pongo.cn/organ/register" class="btn">企业用户注册</a>
+
+</div>
+
+</div>
+
+<div class="clear"></div>
+
+<table id="tb_third" cellpadding="4" cellspacing="8">
+
+<tr>
+
+    <td width="70"><b style="font-size:12px; color:#777;">第三方登录</b></td>
+
+    <td id="td_third">
+
+        <a href="/auth/sinat"><img src="/images/button/sinat.png" /></a>
+
+        <a href="/auth/qq"><img src="/images/button/qq.png" /></a>
+
+        <a href="https://passport.csdn.net/auth/google"><img src="/images/button/google.png" /></a>
+
+        <a href="/auth/linkedin"><img src="/images/button/linkedin.png" /></a>
+
+        <a href="/auth/github"><img src="/images/button/github.png" /></a>
+
+        <a href="/auth/baidu"><img src="/images/button/baidu.png" /></a>
+
+    </td>
+
+</tr>
+
+</table>
+
+</div>
+
+<div class="btm_bg"></div>
+
+</div>
+
+<script type="text/javascript">
+
+var f = 'http://write.blog.csdn.net/help/notfound?aspxerrorpath=/muzizongheng';
+
+</script>
+
+<script type="text/javascript">
+
+    if (f.indexOf("about:") > -1 || f.indexOf("javascript:") > -1)
+
+        f = "http://www.csdn.net/";
+
+    var plow = false;
+
+    function logined(data) {
+
+        if (data.status) {
+
+            if (plow) location = "/account/pwdnote?from=" + escape(f);
+
+            else location = f;
+
+        } else {
+
+            if (data.error.indexOf("激活") > -1) {
+
+                location = "/account/active";
+
+            } else {
+
+                alert(data.error);
+
+            }
+
+        }
+
+    }
+
+    $(function () {
+
+        if (f != 'http://www.csdn.net/') {
+
+            $('#td_third a').attr('href', function () {
+
+                return this.href += '?from=' + encodeURIComponent(f);
+
+            });
+
+        }
+
+    });
+
+</script>
+
+
+
+<div style="text-align: center;">
+
+<script type="text/javascript" src="/scripts/publib_footernew.js"></script>
+
+</div>
+
+</div>
+
+<script type="text/javascript" src="/scripts/csdn.loading.js"></script>
+
+<script type="text/javascript">document.write("<img src=http://counter.csdn.net/pv.aspx?id=20 border=0 width=0 height=0>");</script>
+
+</body>
+
+</html>
