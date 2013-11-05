@@ -3,7 +3,7 @@
 I create Evernote2Blog utility to convert my evernote's notes to blog of metaweblog type.
 This utility use evernote's dev token and noteStore url (these information you can get from evernote dev site. https://www.evernote.com/api/DeveloperToken.action) to access your evernote account, and get your notebooks' notes. After got that data, use metaweblog api to publish new blog  according your blog configuration.
 
-Before use this utility, you need get evernote-sdk-python3 source code from https://github.com/evernote/evernote-sdk-python3 firtst. 
+Before use this utility, you need get evernote-sdk-python3 source code from https://github.com/evernote/evernote-sdk-python3 first. 
 
 #Configuration
 This utility use three config files.
