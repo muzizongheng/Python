@@ -5,7 +5,7 @@
     <SchemaVersion>2.0</SchemaVersion>
     <ProjectGuid>{23c27615-9256-4a8b-ad77-7377551cb995}</ProjectGuid>
     <ProjectHome>Evernote2Blog\</ProjectHome>
-    <StartupFile>Main.py</StartupFile>
+    <StartupFile>setup.py</StartupFile>
     <SearchPath>evernote-sdk-python3-master\</SearchPath>
     <WorkingDirectory>.</WorkingDirectory>
     <OutputPath>.</OutputPath>
@@ -14,6 +14,7 @@
     <InterpreterId />
     <InterpreterVersion />
     <IsWindowsApplication>False</IsWindowsApplication>
+    <EnableNativeCodeDebugging>False</EnableNativeCodeDebugging>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)' == 'Debug'" />
   <PropertyGroup Condition="'$(Configuration)' == 'Release'" />
@@ -26,6 +27,7 @@
     <Content Include="evernote-sdk-python3-master\lib\evernote\edam\userstore\UserStore-remote" />
     <Content Include="evernote-sdk-python3-master\lib\thrift\protocol\fastbinary.c" />
     <Content Include="Readme.md" />
+    <Content Include="setup.bat" />
     <Content Include="test.html" />
   </ItemGroup>
   <ItemGroup>
@@ -69,6 +71,9 @@
     <Compile Include="evernote-sdk-python3-master\lib\__init__.py" />
     <Compile Include="Main.py" />
     <Compile Include="PingService.py" />
+    <Compile Include="setup.py">
+      <SubType>Code</SubType>
+    </Compile>
   </ItemGroup>
   <ItemGroup>
     <Folder Include="evernote-sdk-python3-master\" />
