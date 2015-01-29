@@ -1,4 +1,4 @@
-#
+﻿#
 # A simple Evernote API demo script that lists all notebooks in the user's
 # account and creates a simple test note in the default notebook.
 #
@@ -19,8 +19,8 @@ import json
 import xmlrpc.client
 from datetime import datetime
 
-if "..\\Evernote\\lib" not in sys.path:
-	sys.path.append("..\\Evernote\\lib")
+if ".\\evernote-sdk-python3-master\\lib" not in sys.path:
+    sys.path.append(".\\evernote-sdk-python3-master\\lib")
 
 import thrift.protocol.TBinaryProtocol as TBinaryProtocol
 import thrift.transport.THttpClient as THttpClient
@@ -48,7 +48,7 @@ class Evernote:
         self.existedBlog = None
         self.pingServiceUrls = None
         self.isCreateTags = False
-        self.syncNotebook = "自我心的"
+        self.syncNotebook = "ии???????????"
 
         #special for csdn blog, because it do not support metaweblog api.
         self.isUsingCSDNBlog = False

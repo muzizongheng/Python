@@ -11,8 +11,8 @@ import shutil
 import json
 from datetime import datetime
 
-if "..\\Evernote\\lib" not in sys.path:
-    sys.path.append("..\\Evernote\\lib")
+if ".\\evernote-sdk-python3-master\\lib" not in sys.path:
+    sys.path.append(".\\evernote-sdk-python3-master\\lib")
 
 import thrift.protocol.TBinaryProtocol as TBinaryProtocol
 import thrift.transport.THttpClient as THttpClient
@@ -37,7 +37,7 @@ import AccessCSDN
 
 #below is blog config for cnblogs 
 # "blogServer":"http://www.cnblogs.com/muzizongheng/services/metaweblog.aspx",
-# "blogName":"muzizongheng的专栏",
+# "blogName":"muzizongheng?????????",
 # "blogUrl":"http://www.cnblogs.com/muzizongheng",
 # "blogNewPostUrl":"http://www.cnblogs.com/muzizongheng/p/%s.html",
 # "blogRSS":"http://www.cnblogs.com/muzizongheng/rss",
@@ -68,9 +68,14 @@ if evernote.isUsingCSDNBlog == True:
 
     AccessCSDN.login_csdn()
 
-# List all of the notebooks in the user's account        
-notebooks = noteStore.listNotebooks(authToken)
-print("Found ", len(notebooks), " notebooks:")
+try:
+    # List all of the notebooks in the user's account        
+    notebooks = noteStore.listNotebooks(authToken)
+    print("Found ", len(notebooks), " notebooks:")
+except Errors.EDAMUserException as e:
+    args = dict(title=title,tags=tags)
+    if e.errorCode == 9:
+        self.connect(self.send_note,**args)
 
 #calculate processed blog count currently
 processedBlogCount = 0

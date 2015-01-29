@@ -1,0 +1,90 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003" DefaultTargets="Build">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{23c27615-9256-4a8b-ad77-7377551cb995}</ProjectGuid>
+    <ProjectHome>Evernote2Blog\</ProjectHome>
+    <StartupFile>Main.py</StartupFile>
+    <SearchPath>evernote-sdk-python3-master\</SearchPath>
+    <WorkingDirectory>.</WorkingDirectory>
+    <OutputPath>.</OutputPath>
+    <ProjectTypeGuids>{888888a0-9f3d-457c-b088-3a5042f75d52}</ProjectTypeGuids>
+    <LaunchProvider>Standard Python launcher</LaunchProvider>
+    <InterpreterId />
+    <InterpreterVersion />
+    <IsWindowsApplication>False</IsWindowsApplication>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)' == 'Debug'" />
+  <PropertyGroup Condition="'$(Configuration)' == 'Release'" />
+  <PropertyGroup>
+    <VisualStudioVersion Condition=" '$(VisualStudioVersion)' == '' ">10.0</VisualStudioVersion>
+    <PtvsTargetsFile>$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)\Python Tools\Microsoft.PythonTools.targets</PtvsTargetsFile>
+  </PropertyGroup>
+  <ItemGroup>
+    <Content Include="evernote-sdk-python3-master\lib\evernote\edam\notestore\NoteStore-remote" />
+    <Content Include="evernote-sdk-python3-master\lib\evernote\edam\userstore\UserStore-remote" />
+    <Content Include="evernote-sdk-python3-master\lib\thrift\protocol\fastbinary.c" />
+    <Content Include="Readme.md" />
+    <Content Include="test.html" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="AccessBDY.py" />
+    <Compile Include="AccessBlog.py" />
+    <Compile Include="AccessCSDN.py" />
+    <Compile Include="AccessEN.py" />
+    <Compile Include="evernote-sdk-python3-master\lib\evernote\api\client.py" />
+    <Compile Include="evernote-sdk-python3-master\lib\evernote\api\__init__.py" />
+    <Compile Include="evernote-sdk-python3-master\lib\evernote\edam\error\constants.py" />
+    <Compile Include="evernote-sdk-python3-master\lib\evernote\edam\error\ttypes.py" />
+    <Compile Include="evernote-sdk-python3-master\lib\evernote\edam\error\__init__.py" />
+    <Compile Include="evernote-sdk-python3-master\lib\evernote\edam\limits\constants.py" />
+    <Compile Include="evernote-sdk-python3-master\lib\evernote\edam\limits\ttypes.py" />
+    <Compile Include="evernote-sdk-python3-master\lib\evernote\edam\limits\__init__.py" />
+    <Compile Include="evernote-sdk-python3-master\lib\evernote\edam\notestore\constants.py" />
+    <Compile Include="evernote-sdk-python3-master\lib\evernote\edam\notestore\NoteStore.py" />
+    <Compile Include="evernote-sdk-python3-master\lib\evernote\edam\notestore\ttypes.py" />
+    <Compile Include="evernote-sdk-python3-master\lib\evernote\edam\notestore\__init__.py" />
+    <Compile Include="evernote-sdk-python3-master\lib\evernote\edam\type\constants.py" />
+    <Compile Include="evernote-sdk-python3-master\lib\evernote\edam\type\ttypes.py" />
+    <Compile Include="evernote-sdk-python3-master\lib\evernote\edam\type\__init__.py" />
+    <Compile Include="evernote-sdk-python3-master\lib\evernote\edam\userstore\constants.py" />
+    <Compile Include="evernote-sdk-python3-master\lib\evernote\edam\userstore\ttypes.py" />
+    <Compile Include="evernote-sdk-python3-master\lib\evernote\edam\userstore\UserStore.py" />
+    <Compile Include="evernote-sdk-python3-master\lib\evernote\edam\userstore\__init__.py" />
+    <Compile Include="evernote-sdk-python3-master\lib\evernote\edam\__init__.py" />
+    <Compile Include="evernote-sdk-python3-master\lib\evernote\__init__.py" />
+    <Compile Include="evernote-sdk-python3-master\lib\thrift\protocol\TBase.py" />
+    <Compile Include="evernote-sdk-python3-master\lib\thrift\protocol\TBinaryProtocol.py" />
+    <Compile Include="evernote-sdk-python3-master\lib\thrift\protocol\TProtocol.py" />
+    <Compile Include="evernote-sdk-python3-master\lib\thrift\protocol\__init__.py" />
+    <Compile Include="evernote-sdk-python3-master\lib\thrift\Thrift.py" />
+    <Compile Include="evernote-sdk-python3-master\lib\thrift\transport\THttpClient.py" />
+    <Compile Include="evernote-sdk-python3-master\lib\thrift\transport\TTransport.py" />
+    <Compile Include="evernote-sdk-python3-master\lib\thrift\transport\TTwisted.py" />
+    <Compile Include="evernote-sdk-python3-master\lib\thrift\transport\__init__.py" />
+    <Compile Include="evernote-sdk-python3-master\lib\thrift\TSCons.py" />
+    <Compile Include="evernote-sdk-python3-master\lib\thrift\TSerialization.py" />
+    <Compile Include="evernote-sdk-python3-master\lib\thrift\__init__.py" />
+    <Compile Include="evernote-sdk-python3-master\lib\__init__.py" />
+    <Compile Include="Main.py" />
+    <Compile Include="PingService.py" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="evernote-sdk-python3-master\" />
+    <Folder Include="evernote-sdk-python3-master\lib\" />
+    <Folder Include="evernote-sdk-python3-master\lib\evernote\" />
+    <Folder Include="evernote-sdk-python3-master\lib\evernote\api\" />
+    <Folder Include="evernote-sdk-python3-master\lib\evernote\edam\" />
+    <Folder Include="evernote-sdk-python3-master\lib\evernote\edam\error\" />
+    <Folder Include="evernote-sdk-python3-master\lib\evernote\edam\limits\" />
+    <Folder Include="evernote-sdk-python3-master\lib\evernote\edam\notestore\" />
+    <Folder Include="evernote-sdk-python3-master\lib\evernote\edam\type\" />
+    <Folder Include="evernote-sdk-python3-master\lib\evernote\edam\userstore\" />
+    <Folder Include="evernote-sdk-python3-master\lib\thrift\" />
+    <Folder Include="evernote-sdk-python3-master\lib\thrift\protocol\" />
+    <Folder Include="evernote-sdk-python3-master\lib\thrift\transport\" />
+  </ItemGroup>
+  <Import Project="$(PtvsTargetsFile)" Condition="Exists($(PtvsTargetsFile))" />
+  <Import Project="$(MSBuildToolsPath)\Microsoft.Common.targets" Condition="!Exists($(PtvsTargetsFile))" />
+</Project>
